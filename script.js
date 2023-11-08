@@ -3,15 +3,23 @@ let running = false;
 
 
 // SZIMULÁCIÓHOZ HASZNÁLT VÁLTOZÓK DEKLARÁCIÓJA
-let x;
-let y;
+let u;
+let p;
+let df;
+let dr;
 
 function update() {
     
     // SZIMULÁCIÓS LÉPÉS
 
-    karika.cx.baseVal.value+=x;
-    karika.cy.baseVal.value+=y;
+    
+    p.f+=df;
+    p.r+=dr;
+
+    u = Vektor.osszead(p.cartesian(), new Vektor(350,150));
+
+    karika.cx.baseVal.value=u.x;
+    karika.cy.baseVal.value=u.y;
 
     // SZIMULÁCIÓS LÉPÉS VÉGE
 
@@ -24,8 +32,9 @@ stopbtn.addEventListener("click", animationStop);
 function start(){
     
     // SZIMULÁCIÓHOZ HASZNÁLT VÁLTOZÓK INICIALIZÁLÁSA
-    x = parseFloat(vx.value);
-    y = parseFloat(vy.value);
+    p = new PolarVektor(0,0);
+    df = parseFloat(vx.value);
+    dr = parseFloat(vy.value);
     // EDDIG
 
 
