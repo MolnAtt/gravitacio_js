@@ -1,19 +1,50 @@
-karika.setAttribute('fill', 'red');
-startgomb.addEventListener('click', start);
+let globalID;
+let running = false;
 
-const sleep = (milliseconds) => {
-    return new Promise(resolve => setTimeout(resolve, milliseconds))
+
+// SZIMULÁCIÓHOZ HASZNÁLT VÁLTOZÓK DEKLARÁCIÓJA
+let x;
+let y;
+
+function update() {
+    
+    // SZIMULÁCIÓS LÉPÉS
+
+    karika.cx.baseVal.value+=x;
+    karika.cy.baseVal.value+=y;
+
+    // SZIMULÁCIÓS LÉPÉS VÉGE
+
+    globalID = requestAnimationFrame(update);
 }
 
-async function start(){
-    let x = parseFloat(vx.value);
-    let y = parseFloat(vy.value);
+startbtn.addEventListener("click", start);
+stopbtn.addEventListener("click", animationStop);
 
-    for (let i = 0; i < 100; i++) {
-        karika.cx.baseVal.value+=x;
-        karika.cy.baseVal.value+=y;
-        await sleep(100);
+function start(){
+    
+    // SZIMULÁCIÓHOZ HASZNÁLT VÁLTOZÓK INICIALIZÁLÁSA
+    x = parseFloat(vx.value);
+    y = parseFloat(vy.value);
+    // EDDIG
+
+
+    animationStart()
+}
+
+function animationStart() {
+    if (!running) {
+        globalID = requestAnimationFrame(update);
+        running = true;
     }
 }
+
+function animationStop() {
+    if (running) {
+        cancelAnimationFrame(globalID);
+        running = false;
+    }
+}
+
 
 
