@@ -1,25 +1,24 @@
 
 // SZIMULÁCIÓHOZ HASZNÁLT VÁLTOZÓK DEKLARÁCIÓJA
-let u;
-let p;
-let df;
-let dr;
+
+let napocska = new Egitest("Nap", 100, new Vektor(0, 0), new Vektor(1, 1), "#FF0000", "#000000");
+let foldecske = new Egitest("Föld", 10, new Vektor(-10, 30), new Vektor(-1, 1), "#0000FF", "#000000");
+
 
 function inicializalas(){
-    p = new PolarVektor(0,0);
-    df = parseFloat(vx.value);
-    dr = parseFloat(vy.value);
+
+    vaszon.appendChild(napocska.svgobject);
+    vaszon.appendChild(foldecske.svgobject);
+
 }
 
 function szimulacios_lepes(){
-    p.f+=df;
-    p.r+=dr;
 
-    u = Vektor.osszead(p.cartesian(), new Vektor(350,150));
+    napocska.mozogj();
+    foldecske.mozogj();
 
-    karika.cx.baseVal.value=u.x;
-    karika.cy.baseVal.value=u.y;
 }
+
 
 
 // --------------------------------- Motorháztető alatt -----------------------------------------------
