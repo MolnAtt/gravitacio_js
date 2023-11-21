@@ -32,7 +32,7 @@ class Egitest{
         }
     }
 
-    static gamma = 1;
+    static gamma = 0.9;
 
     /**
      * Ez a függvény visszaadja a bemenő égitestekre ható KÉT erőt.
