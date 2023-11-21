@@ -58,6 +58,10 @@ class Vektor{
         return new Vektor(u.x*a, u.y*a);
     }
 
+    static szamoszt(u,a){
+        return new Vektor(u.x/a, u.y/a);
+    }
+
     polar(){
         return new PolarVektor(to_degree(Math.atan2(this.y,this.x)), this.hossz());
     }
