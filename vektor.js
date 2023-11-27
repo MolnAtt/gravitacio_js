@@ -58,6 +58,11 @@ class Vektor{
         return new Vektor(u.x*a, u.y*a);
     }
 
+    leosztja(a){
+        this.x/=a;
+        this.y/=a;
+    }
+
     static szamoszt(u,a){
         return new Vektor(u.x/a, u.y/a);
     }

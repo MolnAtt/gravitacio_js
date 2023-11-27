@@ -1,5 +1,5 @@
 class Egitest{
-    constructor(nev, tomeg, p, v, belszin, kulszin){
+    constructor(nev, tomeg, p, v, belszin, kulszin, galaxis){
         this.nev = nev;
         this.tomeg = tomeg;
         this.belszin = belszin;
@@ -7,6 +7,8 @@ class Egitest{
         this.p = p;
         this.v = v;
         this.svgobject = this.svgbe();
+        this.galaxis = galaxis;
+        galaxis.egitestei.push(this);
     }
 
     mozogj(){
@@ -18,6 +20,10 @@ class Egitest{
         this.svgobject.setAttribute('cx', this.p.x);
         this.svgobject.setAttribute('cy', this.p.y);
     }
+
+
+
+
 /**
  * 
  * @param {Egitest[]} egitestek 
