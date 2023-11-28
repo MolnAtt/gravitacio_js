@@ -1,0 +1,16 @@
+{
+    "name": "gravitacio_js",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "esbuild --bundle script.ts --outfile=index.js",
+        "build:watch": "nodemon --watch . --exec esbuild --bundle script.ts --outfile=index.js"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "esbuild": "^0.19.8"
+    }
+}
