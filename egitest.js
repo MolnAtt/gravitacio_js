@@ -6,7 +6,9 @@ class Egitest{
         this.kulszin = kulszin;
         this.p = p;
         this.v = v;
-        this.svgobject = this.svgbe();
+        this.svgobject = this.svg_bolygo_letrehozasa();
+        this.svgnyil = this.svg_nyil_letrehozasa();
+        this.svg_nyil_update();
         this.galaxis = galaxis;
         galaxis.egitestei.push(this);
     }
@@ -59,7 +61,7 @@ class Egitest{
     }
 
 
-    svgbe(){
+    svg_bolygo_letrehozasa(){
         let svgo = document.createElementNS("http://www.w3.org/2000/svg", 'circle');
         // <circle/>
         svgo.setAttribute('cx', this.p.x);
@@ -69,8 +71,23 @@ class Egitest{
         svgo.setAttribute('stroke-width', '2');
         svgo.setAttribute('fill', this.belszin);
         // svgobject.setAttribute('id', "bela");
+
         return svgo;
     }
+    svg_nyil_letrehozasa(){
+        let svgnyil = document.createElementNS("http://www.w3.org/2000/svg", 'path');
+        // <circle/>
+        svgnyil.setAttribute('marker-end', 'url(#head)');
+        svgnyil.setAttribute('stroke-width', 2);
+        svgnyil.setAttribute('fill', 'none');
+        svgnyil.setAttribute('stroke', 'gray');
+        svgnyil.setAttribute('stroke-width', '2');
+        return svgnyil;
+    }
+    svg_nyil_update(){
+        this.svgnyil.setAttribute('d', `M${this.p.x},${this.p.y} ${this.p.x+this.v.x*100},${this.p.y+this.v.y*100}`);
+    }
+
 }
 
 
