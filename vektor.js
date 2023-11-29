@@ -88,6 +88,9 @@ class Vektor{
         return new Vektor(this.x/this.hossz(), this.y/this.hossz());
     }
 
+    klon(){
+        return new Vektor(this.x, this.y);
+    }
 }
 
 

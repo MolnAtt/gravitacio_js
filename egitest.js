@@ -4,13 +4,20 @@ class Egitest{
         this.tomeg = tomeg;
         this.belszin = belszin;
         this.kulszin = kulszin;
-        this.p = p;
-        this.v = v;
+        this.kezdopozicio = [p, v];
         this.svgnyil = this.svg_nyil_letrehozasa();
-        this.svgobject = this.svg_bolygo_letrehozasa();
+        this.svgobject = this.svg_bolygo_letrehozasa(p);
+        this.pv_inic();
         this.svg_nyil_update();
         this.galaxis = galaxis;
         galaxis.egitestei.push(this);
+    }
+
+    pv_inic(){
+        this.svgobject.setAttribute('cx', this.kezdopozicio[0].x);
+        this.svgobject.setAttribute('cy', this.kezdopozicio[0].y);
+        this.p = this.kezdopozicio[0].klon();
+        this.v = this.kezdopozicio[1].klon();
     }
 
     mozogj(){
@@ -22,7 +29,6 @@ class Egitest{
         this.svgobject.setAttribute('cx', this.p.x);
         this.svgobject.setAttribute('cy', this.p.y);
     }
-
 
 
 
@@ -61,11 +67,11 @@ class Egitest{
     }
 
 
-    svg_bolygo_letrehozasa(){
+    svg_bolygo_letrehozasa(p){
         let svgo = document.createElementNS("http://www.w3.org/2000/svg", 'circle');
         // <circle/>
-        svgo.setAttribute('cx', this.p.x);
-        svgo.setAttribute('cy', this.p.y);
+        svgo.setAttribute('cx', p.x);
+        svgo.setAttribute('cy', p.y);
         svgo.setAttribute('r', Math.sqrt(this.tomeg));
         svgo.setAttribute('stroke', this.kulszin);
         svgo.setAttribute('stroke-width', '2');
