@@ -1,7 +1,7 @@
 class Galaxis{
     constructor(nev){
         this.nev = nev;
-        this.egitestei = []
+        this.egitestei = [];
     }
 
     eltolas(v){
@@ -18,5 +18,17 @@ class Galaxis{
         }
         result.leosztja(this.egitestei.length);
         return result;
+    }
+
+    nyilak_update(){
+        for (const egitest of this.egitestei) {
+            egitest.svg_nyil_update();
+        }
+    }
+
+    nyillathatosag_kapcs(){
+        for (const egitest of this.egitestei) {
+            egitest.svgnyil.classList.toggle('lathatatlan');
+        }
     }
 }

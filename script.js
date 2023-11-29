@@ -30,6 +30,7 @@ stopbtn.addEventListener("click", animationStop);
 sulypontbtn.addEventListener("click", sulypontReset);
 bolygobtn.addEventListener("click", bolygo_letevese);
 
+
 function start(){
     inicializalas();
     animationStart();
@@ -39,16 +40,17 @@ function animationStart() {
     if (!running) {
         globalID = requestAnimationFrame(update);
         running = true;
+        galaxis.nyillathatosag_kapcs();        
     }
 }
 
 
-// kéne még az, hogy ilyenkor minden nyil toggle lathatatlan
-// kéne még az, hogy minden nyil pozicio update
 function animationStop() {
     if (running) {
         cancelAnimationFrame(globalID);
         running = false;
+        galaxis.nyilak_update();
+        galaxis.nyillathatosag_kapcs();
     }
 }
 
