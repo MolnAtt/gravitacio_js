@@ -11,7 +11,16 @@ class Egitest{
         this.svg_nyil_update();
         this.galaxis = galaxis;
         galaxis.egitestei.push(this);
+        this.svgobject.addEventListener('contextmenu', e => {e.preventDefault(); e.stopPropagation(); this.torol()});
     }
+
+    torol(){
+        this.svgnyil.remove();
+        this.svgobject.remove();
+        this.galaxis.egitestei.splice(this.galaxis.egitestei.indexOf(this),1);
+        delete this;
+    }
+
 
     pv_inic(){
         this.svgobject.setAttribute('cx', this.kezdopozicio[0].x);
