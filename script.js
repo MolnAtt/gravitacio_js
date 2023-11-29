@@ -9,6 +9,7 @@ function inicializalas(){
 
 function szimulacios_lepes(){
     Egitest.gravitacios_kolcsonhatas(galaxis.egitestei);
+    galaxis.utkozeses_kolcsonhatas();
     for (const egitest of galaxis.egitestei) {
         egitest.mozogj();
     }

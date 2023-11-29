@@ -31,4 +31,14 @@ class Galaxis{
             egitest.svgnyil.classList.toggle('lathatatlan');
         }
     }
+
+    utkozeses_kolcsonhatas(){
+        for (let i = 0; i < this.egitestei.length; i++) {
+            for (let j = i+1; j < this.egitestei.length; j++) {
+                if (this.egitestei[i].utkozik(this.egitestei[j])){
+                    this.egitestei[i].beolvaszt(this.egitestei[j])
+                }
+            }
+        }
+    }
 }
