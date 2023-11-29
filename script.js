@@ -27,10 +27,13 @@ function update() {
 
 startbtn.addEventListener("click", start);
 stopbtn.addEventListener("click", animationStop);
+resetbtn.addEventListener("click", reset);
 sulypontbtn.addEventListener("click", sulypontReset);
 bolygobtn.addEventListener("click", bolygo_letevese);
 
 vaszon.addEventListener("wheel", nagyit);
+
+
 
 function nagyit(e){
     const c = 1.1;
@@ -42,6 +45,12 @@ function nagyit(e){
     }
 }
 
+function reset(){
+    for (const egitest of galaxis.egitestei) {
+        egitest.pv_inic();
+        egitest.svg_nyil_update();
+    }
+}
 
 function start(){
     inicializalas();
