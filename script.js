@@ -30,6 +30,18 @@ stopbtn.addEventListener("click", animationStop);
 sulypontbtn.addEventListener("click", sulypontReset);
 bolygobtn.addEventListener("click", bolygo_letevese);
 
+vaszon.addEventListener("wheel", nagyit);
+
+function nagyit(e){
+    const c = 1.1;
+    if (e.deltaY < 0){
+        console.log(vaszon.viewBox);
+        vaszon.setAttribute('viewBox', `${vaszon.viewBox.animVal.x/c} ${vaszon.viewBox.animVal.y/c} ${vaszon.viewBox.animVal.width/c} ${vaszon.viewBox.animVal.height/c}`);
+    } else if (e.deltaY > 0){
+        vaszon.setAttribute('viewBox', `${vaszon.viewBox.animVal.x*c} ${vaszon.viewBox.animVal.y*c} ${vaszon.viewBox.animVal.width*c} ${vaszon.viewBox.animVal.height*c}`);
+    }
+}
+
 
 function start(){
     inicializalas();

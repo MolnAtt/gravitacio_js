@@ -6,8 +6,8 @@ class Egitest{
         this.kulszin = kulszin;
         this.p = p;
         this.v = v;
-        this.svgobject = this.svg_bolygo_letrehozasa();
         this.svgnyil = this.svg_nyil_letrehozasa();
+        this.svgobject = this.svg_bolygo_letrehozasa();
         this.svg_nyil_update();
         this.galaxis = galaxis;
         galaxis.egitestei.push(this);
