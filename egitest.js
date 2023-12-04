@@ -34,6 +34,133 @@ class Egitest{
         this.frissit();
     }
 
+    utkozik(egitest){
+        const tavolsagnegyzet = Vektor.kivon(this.p, egitest.p).hossznegyzet();
+        const sugarosszegnegyzet = this.tomeg+egitest.tomeg;
+        return tavolsagnegyzet < sugarosszegnegyzet;
+    }
+
+    // under the hood színkeverés HSL színtérben, nem kell érteni, hex kód megy be, hex kódot ad ki (by ChatGPT)
+    szinkever(color1, color2, ratio) {
+        ratio = Math.max(0, Math.min(1, ratio)); // Ensure ratio is between 0 and 1
+    
+        // Convert hex to HSL
+        const hexToHsl = (hex) => {
+            const bigint = parseInt(hex.slice(1), 16);
+            const r = (bigint >> 16) & 255;
+            const g = (bigint >> 8) & 255;
+            const b = bigint & 255;
+    
+            const normalizedR = r / 255;
+            const normalizedG = g / 255;
+            const normalizedB = b / 255;
+    
+            const max = Math.max(normalizedR, normalizedG, normalizedB);
+            const min = Math.min(normalizedR, normalizedG, normalizedB);
+    
+            let h, s, l = (max + min) / 2;
+    
+            if (max === min) {
+                h = s = 0; // achromatic
+            } else {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case normalizedR:
+                        h = (normalizedG - normalizedB) / d + (normalizedG < normalizedB ? 6 : 0);
+                        break;
+                    case normalizedG:
+                        h = (normalizedB - normalizedR) / d + 2;
+                        break;
+                    case normalizedB:
+                        h = (normalizedR - normalizedG) / d + 4;
+                        break;
+                }
+                h /= 6;
+            }
+    
+            return { h, s, l };
+        };
+    
+        // Interpolate in HSL
+        const hsl1 = hexToHsl(color1);
+        const hsl2 = hexToHsl(color2);
+    
+        const hueDiff = hsl2.h - hsl1.h;
+    
+        if (Math.abs(hueDiff) > 0.5) {
+            // Ensure that interpolation goes the shortest way around the color wheel
+            hsl2.h -= Math.sign(hueDiff);
+        }
+    
+        const blendedHsl = {
+            h: hsl1.h + hueDiff * ratio,
+            s: hsl1.s + (hsl2.s - hsl1.s) * ratio,
+            l: hsl1.l + (hsl2.l - hsl1.l) * ratio
+        };
+    
+        // Convert back to hex
+        const hslToHex = (hsl) => {
+            const hueToRgb = (p, q, t) => {
+                if (t < 0) t += 1;
+                if (t > 1) t -= 1;
+                if (t < 1 / 6) return p + (q - p) * 6 * t;
+                if (t < 1 / 2) return q;
+                if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+                return p;
+            };
+    
+            const { h, s, l } = hsl;
+            const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            const p = 2 * l - q;
+            const r = hueToRgb(p, q, h + 1 / 3);
+            const g = hueToRgb(p, q, h);
+            const b = hueToRgb(p, q, h - 1 / 3);
+    
+            const componentToHex = (c) => {
+                const hex = Math.round(c * 255).toString(16);
+                return hex.length === 1 ? "0" + hex : hex;
+            };
+    
+            return `#${componentToHex(r)}${componentToHex(g)}${componentToHex(b)}`;
+        };
+    
+        return hslToHex(blendedHsl);
+    }
+    
+    nevatlag(nev1, suly1, nev2, suly2) {
+        const nev1hossz = nev1.length;
+        const nev2hossz = nev2.length;
+        const ujnevhossz = Math.round((nev1hossz * suly1 + nev2hossz * suly2) / (suly1 + suly2));
+        var ujnev = "";
+        for (let i = 0; i < ujnevhossz; i++) {
+            ujnev += String.fromCharCode((nev1.charCodeAt(i) * suly1 + nev2.charCodeAt(i) * suly2) / (suly1 + suly2));
+        }
+        return ujnev;
+    }
+    
+    beolvaszt(egitest){
+        const uj_tomeg = this.tomeg+egitest.tomeg;
+        const uj_p = Vektor.szamoszt(Vektor.osszead(Vektor.szamszoroz(this.p, this.tomeg), Vektor.szamszoroz(egitest.p, egitest.tomeg)), uj_tomeg);
+        const uj_v = Vektor.szamoszt(Vektor.osszead(Vektor.szamszoroz(this.v, this.tomeg), Vektor.szamszoroz(egitest.v, egitest.tomeg)), uj_tomeg); 
+        const uj_belszin = this.szinkever(this.belszin, egitest.belszin, egitest.tomeg/uj_tomeg);
+        const uj_kulszin = this.szinkever(this.kulszin, egitest.kulszin, egitest.tomeg/uj_tomeg);
+        const uj_nev = this.nevatlag(this.nev, this.tomeg, egitest.nev, egitest.tomeg);
+
+        this.nev = uj_nev;
+        this.tomeg = uj_tomeg;
+        this.belszin = uj_belszin;
+        this.kulszin = uj_kulszin;
+        this.p = uj_p;
+        this.v = uj_v;
+
+        this.svgobject.setAttribute('r', Math.sqrt(this.tomeg));
+        this.svgobject.setAttribute('stroke', this.kulszin);
+        this.svgobject.setAttribute('fill', this.belszin);
+
+        egitest.torol();
+    }
+
     frissit(){
         this.svgobject.setAttribute('cx', this.p.x);
         this.svgobject.setAttribute('cy', this.p.y);
