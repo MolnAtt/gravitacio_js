@@ -92,10 +92,3 @@ class Vektor{
         return new Vektor(this.x, this.y);
     }
 }
-
-
-u = new Vektor(5, 4);
-v = new Vektor(2, 1);
-
-u.hozzaad(v)
-Vektor.osszead(u,v)
