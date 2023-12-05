@@ -166,23 +166,7 @@ class Egitest{
         this.svgobject.setAttribute('cy', this.p.y);
     }
 
-
-
-/**
- * 
- * @param {Egitest[]} egitestek 
- */
-    static gravitacios_kolcsonhatas(egitestek){
-        for (let i = 0; i < egitestek.length; i++) {
-            for (let j = i+1; j < egitestek.length; j++) {
-                const[u,v] = this.gravitacios_kolcsonhatas_parra(egitestek[i], egitestek[j]);
-                egitestek[i].v.hozzaad(u);
-                egitestek[j].v.hozzaad(v);
-            }
-        }
-    }
-
-    static gamma = 0.9;
+    static gamma = 1;
 
     /**
      * Ez a függvény visszaadja a bemenő égitestekre ható KÉT erőt.

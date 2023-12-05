@@ -41,4 +41,27 @@ class Galaxis{
             }
         }
     }
+
+    gravitacios_kolcsonhatas(){
+        for (let i = 0; i < this.egitestei.length; i++) {
+            for (let j = i+1; j < this.egitestei.length; j++) {
+                const[u,v] = Egitest.gravitacios_kolcsonhatas_parra(this.egitestei[i], this.egitestei[j]);
+                this.egitestei[i].v.hozzaad(u);
+                this.egitestei[j].v.hozzaad(v);
+            }
+        }
+    }
+
+    mozgat(){
+        for (const egitest of this.egitestei) {
+            egitest.mozgat();
+        }
+    }
+
+    reset(){
+        for (const egitest of galaxis.egitestei) {
+            egitest.pv_inic();
+            egitest.svg_nyil_update();
+        }
+    }
 }

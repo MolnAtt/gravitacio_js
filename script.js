@@ -8,11 +8,9 @@ function inicializalas(){
 }
 
 function szimulacios_lepes(){
-    Egitest.gravitacios_kolcsonhatas(galaxis.egitestei);
+    galaxis.gravitacios_kolcsonhatas();
     galaxis.utkozeses_kolcsonhatas();
-    for (const egitest of galaxis.egitestei) {
-        egitest.mozogj();
-    }
+    galaxis.mozgat();
 }
 
 // --------------------------------- Motorháztető alatt -----------------------------------------------
@@ -28,7 +26,7 @@ function update() {
 
 startbtn.addEventListener("click", start);
 stopbtn.addEventListener("click", animationStop);
-resetbtn.addEventListener("click", reset);
+resetbtn.addEventListener("click", galaxis.reset);
 sulypontbtn.addEventListener("click", sulypontReset);
 bolygobtn.addEventListener("click", bolygo_letevese);
 
@@ -43,13 +41,6 @@ function nagyit(e){
         vaszon.setAttribute('viewBox', `${vaszon.viewBox.animVal.x/c} ${vaszon.viewBox.animVal.y/c} ${vaszon.viewBox.animVal.width/c} ${vaszon.viewBox.animVal.height/c}`);
     } else if (e.deltaY > 0){
         vaszon.setAttribute('viewBox', `${vaszon.viewBox.animVal.x*c} ${vaszon.viewBox.animVal.y*c} ${vaszon.viewBox.animVal.width*c} ${vaszon.viewBox.animVal.height*c}`);
-    }
-}
-
-function reset(){
-    for (const egitest of galaxis.egitestei) {
-        egitest.pv_inic();
-        egitest.svg_nyil_update();
     }
 }
 
@@ -78,14 +69,8 @@ function animationStop() {
 
 function sulypontReset() {
     let s = galaxis.sulypont();
-    console.log(s);
     galaxis.eltolas(Vektor.ellentett(s));
-
 }
-
-
-
-
 
 
 vaszon.addEventListener("mousedown", bolygo_poziciojanak_megadasa, false);
