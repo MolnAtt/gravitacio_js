@@ -12,7 +12,6 @@ class Galaxis{
 
     sulypont(){
         let result = new Vektor(0,0);
-        console.log(result);
         for (const egitest of this.egitestei) {
             result.hozzaad(egitest.p);
         }
@@ -54,7 +53,7 @@ class Galaxis{
 
     mozgat(){
         for (const egitest of this.egitestei) {
-            egitest.mozgat();
+            egitest.mozogj();
         }
     }
 
