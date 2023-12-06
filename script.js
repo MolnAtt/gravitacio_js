@@ -2,14 +2,17 @@
 // SZIMULÁCIÓHOZ HASZNÁLT VÁLTOZÓK DEKLARÁCIÓJA
 
 let galaxis = new Galaxis("Kistejút")
+let m1 = new Egitest("m1", 100, new Vektor(-97.000436, 24.308753), new Vektor(0.4662036850, 0.4323657300), "#FF0000", "#FF0000", galaxis);
+let m2 = new Egitest("m2", 100, new Vektor(0, 0), new Vektor(-0.93240737, -0.86473146), "#0000FF", "#0000FF", galaxis);
+let m3 = new Egitest("m3", 100, new Vektor(97.000436, -24.308753), new Vektor(0.4662036850, 0.4323657300), "#00FF00", "#00FF00", galaxis);
 
 function inicializalas(){
     
 }
 
 function szimulacios_lepes(){
-    galaxis.gravitacios_kolcsonhatas();
     galaxis.utkozeses_kolcsonhatas();
+    galaxis.gravitacios_kolcsonhatas();
     galaxis.mozgat();
 }
 
@@ -26,7 +29,7 @@ function update() {
 
 startbtn.addEventListener("click", start);
 stopbtn.addEventListener("click", animationStop);
-resetbtn.addEventListener("click", galaxis.reset);
+resetbtn.addEventListener("click", () => galaxis.reset());
 sulypontbtn.addEventListener("click", sulypontReset);
 bolygobtn.addEventListener("click", bolygo_letevese);
 
@@ -76,12 +79,6 @@ function sulypontReset() {
 vaszon.addEventListener("mousedown", bolygo_poziciojanak_megadasa, false);
 vaszon.addEventListener("mouseup", bolygo_sebessegenek_megadasa, false);
 
-let globalis_kattintasszamlalo_valtozo = 0;
-
-//  első kattintás p-t állít
-// második kattintás v-t állít
-// külön gomb pakolja le a bolygót, ha ez jó.
-
 let innen = new Vektor(0,0);
 let ide = new Vektor(0,0);
 
@@ -104,7 +101,7 @@ function bolygo_sebessegenek_megadasa(evt) {
 function bolygo_letevese(){
     let p = new Vektor(parseFloat(px.value), parseFloat(py.value));
     let v = new Vektor(parseFloat(vx.value), parseFloat(vy.value));
-    let bolygocska = new Egitest(bolygonev.value, parseFloat(tomeg.value), p, v, egitest_belszin.value, egitest_kulszin.value, galaxis, vaszon);
+    let bolygocska = new Egitest(bolygonev.value, parseFloat(tomeg.value), p, v, egitest_belszin.value, egitest_kulszin.value, galaxis);
     if(running){
         bolygocska.svgnyil.classList.toggle('lathatatlan');
     }

@@ -10,8 +10,7 @@ class Egitest{
         this.svgobject = this.svg_bolygo_letrehozasa(p);
         this.pv_inic();
         this.svg_nyil_update();
-        vaszon.appendChild(this.svgnyil);
-        vaszon.appendChild(this.svgobject);
+        this.lerajzol();
         this.galaxis = galaxis;
         galaxis.egitestei.push(this);
         this.svgobject.addEventListener('contextmenu', e => {e.preventDefault(); e.stopPropagation(); this.torol()});
@@ -24,6 +23,10 @@ class Egitest{
         delete this;
     }
 
+    lerajzol(){
+        vaszon.appendChild(this.svgnyil);
+        vaszon.appendChild(this.svgobject);
+    }
 
     pv_inic(){
         this.svgobject.setAttribute('cx', this.kezdopozicio[0].x);
@@ -44,7 +47,7 @@ class Egitest{
     }
 
     // under the hood színkeverés HSL színtérben, nem kell érteni, hex kód megy be, hex kódot ad ki (by ChatGPT)
-    szinkever(color1, color2, ratio) {
+    static szinkever(color1, color2, ratio) {
         ratio = Math.max(0, Math.min(1, ratio)); // Ensure ratio is between 0 and 1
     
         // Convert hex to HSL
@@ -131,7 +134,7 @@ class Egitest{
         return hslToHex(blendedHsl);
     }
     
-    nevatlag(nev1, suly1, nev2, suly2) {
+    static nevatlag(nev1, suly1, nev2, suly2) {
         const nev1hossz = nev1.length;
         const nev2hossz = nev2.length;
         const ujnevhossz = Math.round((nev1hossz * suly1 + nev2hossz * suly2) / (suly1 + suly2));
@@ -146,11 +149,11 @@ class Egitest{
         const uj_tomeg = this.tomeg+egitest.tomeg;
         const uj_p = Vektor.szamoszt(Vektor.osszead(Vektor.szamszoroz(this.p, this.tomeg), Vektor.szamszoroz(egitest.p, egitest.tomeg)), uj_tomeg);
         const uj_v = Vektor.szamoszt(Vektor.osszead(Vektor.szamszoroz(this.v, this.tomeg), Vektor.szamszoroz(egitest.v, egitest.tomeg)), uj_tomeg); 
-        const uj_belszin = this.szinkever(this.belszin, egitest.belszin, egitest.tomeg/uj_tomeg);
-        const uj_kulszin = this.szinkever(this.kulszin, egitest.kulszin, egitest.tomeg/uj_tomeg);
-        const uj_nev = this.nevatlag(this.nev, this.tomeg, egitest.nev, egitest.tomeg);
+        const uj_belszin = Egitest.szinkever(this.belszin, egitest.belszin, egitest.tomeg/uj_tomeg);
+        const uj_kulszin = Egitest.szinkever(this.kulszin, egitest.kulszin, egitest.tomeg/uj_tomeg);
+        const uj_nev = Egitest.nevatlag(this.nev, this.tomeg, egitest.nev, egitest.tomeg);
 
-        const uj_bolygo = new Egitest(uj_nev, uj_tomeg, uj_p, uj_v, uj_belszin, uj_kulszin, this.galaxis, this.vaszon, false);
+        const uj_bolygo = new Egitest(uj_nev, uj_tomeg, uj_p, uj_v, uj_belszin, uj_kulszin, this.galaxis, false);
 
         // hozzáadás a nem kezeltekhez
         this.galaxis.nem_kezelt_egitestei.push(this);
@@ -158,6 +161,12 @@ class Egitest{
         // törlés a kezeltekből
         this.galaxis.egitestei.splice(this.galaxis.egitestei.indexOf(this),1);
         egitest.galaxis.egitestei.splice(egitest.galaxis.egitestei.indexOf(egitest),1);
+        // törlés a DOM-ból
+        this.svgnyil.remove();
+        this.svgobject.remove();
+        egitest.svgnyil.remove();
+        egitest.svgobject.remove();
+
         uj_bolygo.svgnyil.classList.toggle('lathatatlan');
     }
 
