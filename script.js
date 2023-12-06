@@ -104,9 +104,7 @@ function bolygo_sebessegenek_megadasa(evt) {
 function bolygo_letevese(){
     let p = new Vektor(parseFloat(px.value), parseFloat(py.value));
     let v = new Vektor(parseFloat(vx.value), parseFloat(vy.value));
-    let bolygocska = new Egitest(bolygonev.value, parseFloat(tomeg.value), p, v, egitest_belszin.value, egitest_kulszin.value, galaxis);
-    vaszon.appendChild(bolygocska.svgobject);
-    vaszon.appendChild(bolygocska.svgnyil);
+    let bolygocska = new Egitest(bolygonev.value, parseFloat(tomeg.value), p, v, egitest_belszin.value, egitest_kulszin.value, galaxis, vaszon);
     if(running){
         bolygocska.svgnyil.classList.toggle('lathatatlan');
     }

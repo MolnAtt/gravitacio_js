@@ -2,6 +2,7 @@ class Galaxis{
     constructor(nev){
         this.nev = nev;
         this.egitestei = [];
+        this.nem_kezelt_egitestei = [];
     }
 
     eltolas(v){
