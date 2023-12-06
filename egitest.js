@@ -198,8 +198,6 @@ class Egitest{
 
     svg_bolygo_letrehozasa(p){
         let svgo = document.createElementNS("http://www.w3.org/2000/svg", 'circle');
-        svgo.setAttribute('cx', p.x);
-        svgo.setAttribute('cy', p.y);
         svgo.setAttribute('r', Math.sqrt(this.tomeg));
         svgo.setAttribute('stroke', this.kulszin);
         svgo.setAttribute('stroke-width', '2');
