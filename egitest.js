@@ -1,14 +1,16 @@
 class Egitest{
-    constructor(nev, tomeg, p, v, belszin, kulszin, galaxis){
+    constructor(nev, tomeg, p, v, belszin, kulszin, galaxis, eredeti=true){
         this.nev = nev;
         this.tomeg = tomeg;
         this.belszin = belszin;
         this.kulszin = kulszin;
+        this.eredeti = eredeti;
         this.kezdopozicio = [p, v];
         this.svgnyil = this.svg_nyil_letrehozasa();
         this.svgobject = this.svg_bolygo_letrehozasa(p);
         this.pv_inic();
         this.svg_nyil_update();
+        this.lerajzol();
         this.galaxis = galaxis;
         galaxis.egitestei.push(this);
         this.svgobject.addEventListener('contextmenu', e => {e.preventDefault(); e.stopPropagation(); this.torol()});
@@ -21,6 +23,10 @@ class Egitest{
         delete this;
     }
 
+    lerajzol(){
+        vaszon.appendChild(this.svgnyil);
+        vaszon.appendChild(this.svgobject);
+    }
 
     pv_inic(){
         this.svgobject.setAttribute('cx', this.kezdopozicio[0].x);
@@ -41,7 +47,7 @@ class Egitest{
     }
 
     // under the hood színkeverés HSL színtérben, nem kell érteni, hex kód megy be, hex kódot ad ki (by ChatGPT)
-    szinkever(color1, color2, ratio) {
+    static szinkever(color1, color2, ratio) {
         ratio = Math.max(0, Math.min(1, ratio)); // Ensure ratio is between 0 and 1
     
         // Convert hex to HSL
@@ -128,7 +134,7 @@ class Egitest{
         return hslToHex(blendedHsl);
     }
     
-    nevatlag(nev1, suly1, nev2, suly2) {
+    static nevatlag(nev1, suly1, nev2, suly2) {
         const nev1hossz = nev1.length;
         const nev2hossz = nev2.length;
         const ujnevhossz = Math.round((nev1hossz * suly1 + nev2hossz * suly2) / (suly1 + suly2));
@@ -143,22 +149,25 @@ class Egitest{
         const uj_tomeg = this.tomeg+egitest.tomeg;
         const uj_p = Vektor.szamoszt(Vektor.osszead(Vektor.szamszoroz(this.p, this.tomeg), Vektor.szamszoroz(egitest.p, egitest.tomeg)), uj_tomeg);
         const uj_v = Vektor.szamoszt(Vektor.osszead(Vektor.szamszoroz(this.v, this.tomeg), Vektor.szamszoroz(egitest.v, egitest.tomeg)), uj_tomeg); 
-        const uj_belszin = this.szinkever(this.belszin, egitest.belszin, egitest.tomeg/uj_tomeg);
-        const uj_kulszin = this.szinkever(this.kulszin, egitest.kulszin, egitest.tomeg/uj_tomeg);
-        const uj_nev = this.nevatlag(this.nev, this.tomeg, egitest.nev, egitest.tomeg);
+        const uj_belszin = Egitest.szinkever(this.belszin, egitest.belszin, egitest.tomeg/uj_tomeg);
+        const uj_kulszin = Egitest.szinkever(this.kulszin, egitest.kulszin, egitest.tomeg/uj_tomeg);
+        const uj_nev = Egitest.nevatlag(this.nev, this.tomeg, egitest.nev, egitest.tomeg);
 
-        this.nev = uj_nev;
-        this.tomeg = uj_tomeg;
-        this.belszin = uj_belszin;
-        this.kulszin = uj_kulszin;
-        this.p = uj_p;
-        this.v = uj_v;
+        const uj_bolygo = new Egitest(uj_nev, uj_tomeg, uj_p, uj_v, uj_belszin, uj_kulszin, this.galaxis, false);
 
-        this.svgobject.setAttribute('r', Math.sqrt(this.tomeg));
-        this.svgobject.setAttribute('stroke', this.kulszin);
-        this.svgobject.setAttribute('fill', this.belszin);
+        // hozzáadás a nem kezeltekhez
+        this.galaxis.nem_kezelt_egitestei.push(this);
+        egitest.galaxis.nem_kezelt_egitestei.push(egitest);
+        // törlés a kezeltekből
+        this.galaxis.egitestei.splice(this.galaxis.egitestei.indexOf(this),1);
+        egitest.galaxis.egitestei.splice(egitest.galaxis.egitestei.indexOf(egitest),1);
+        // törlés a DOM-ból
+        this.svgnyil.remove();
+        this.svgobject.remove();
+        egitest.svgnyil.remove();
+        egitest.svgobject.remove();
 
-        egitest.torol();
+        uj_bolygo.svgnyil.classList.toggle('lathatatlan');
     }
 
     frissit(){
@@ -189,18 +198,15 @@ class Egitest{
 
     svg_bolygo_letrehozasa(p){
         let svgo = document.createElementNS("http://www.w3.org/2000/svg", 'circle');
-        // <circle/>
         svgo.setAttribute('r', Math.sqrt(this.tomeg));
         svgo.setAttribute('stroke', this.kulszin);
         svgo.setAttribute('stroke-width', '2');
         svgo.setAttribute('fill', this.belszin);
-        // svgobject.setAttribute('id', "bela");
 
         return svgo;
     }
     svg_nyil_letrehozasa(){
         let svgnyil = document.createElementNS("http://www.w3.org/2000/svg", 'path');
-        // <circle/>
         svgnyil.setAttribute('marker-end', 'url(#head)');
         svgnyil.setAttribute('stroke-width', 2);
         svgnyil.setAttribute('fill', 'none');
