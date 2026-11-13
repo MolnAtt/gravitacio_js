@@ -1,4 +1,15 @@
 class Egitest{
+    /**
+     * Létrehoz egy új égitestet a megadott paraméterekkel. A pozíció és a sebesség vektorokat klónozza, így az égitest belső állapota nem változik meg a paraméterek változásával.
+     * @param {string} nev A bolygó neve. A bolygó neve a bolygó tömegének súlyozott átlaga lesz, ha két égitest összeolvad. A súlyozás az égitestek tömegén alapul. A súlyozott átlagot a Egitest.nevatlag() függvény számítja ki.
+     * @param {number} tomeg A bolygó tömege.
+     * @param {Vektor} p pozícióvektor
+     * @param {Vektor} v sebességvektor
+     * @param {string} belszin Ez a szín a bolygó kitöltésének színe lesz. A körvonal színe a kulszin paraméterben megadott szín lesz.
+     * @param {string} kulszin Ez a szín a bolygó körvonalának színe lesz. A belső szín a bolygó kitöltésének színe lesz. 
+     * @param {Galaxis} galaxis Minden egitest egy galaxisban van, a galaxis az égitestek listáját tartalmazza. Fontos számon tartani azt is, hogy az égitestek a galaxisban vannak, mert a galaxis felelős az égitestek közötti gravitációs kölcsönhatásokért és ütközésekért.
+     * @param {boolean} eredeti Ez a paraméter azt jelzi, hogy az égitest eredeti-e, vagy egy összeolvadás eredménye. Ha az égitest összeolvad egy másik égitesttel, akkor az új égitest nem lesz eredeti, és a galaxis nem fogja kezelni az új égitestet. Az eredeti égitestek a galaxisban vannak, és a galaxis felelős az égitestek közötti gravitációs kölcsönhatásokért és ütközésekért. 
+     */
     constructor(nev, tomeg, p, v, belszin, kulszin, galaxis, eredeti=true){
         this.nev = nev;
         this.tomeg = tomeg;
@@ -16,6 +27,10 @@ class Egitest{
         this.svgobject.addEventListener('contextmenu', e => {e.preventDefault(); e.stopPropagation(); this.torol()});
     }
 
+    /**
+     * Törli az égitestet a galaxisból és a DOM-ból.
+     * @returns {void}
+     */
     torol(){
         this.svgnyil.remove();
         this.svgobject.remove();
@@ -23,26 +38,44 @@ class Egitest{
         delete this;
     }
 
+    /**
+     * Lerajzolja az égitestet a vászonra. A nyilat és a bolygót is hozzáadja a DOM-hoz.
+     * @returns {void}
+     */
     lerajzol(){
         vaszon.appendChild(this.svgnyil);
         vaszon.appendChild(this.svgobject);
     }
 
+    /**
+     * Inicializálja az égitest pozícióját és sebességét a kezdőpozíció alapján. A kezdőpozíció egy tömb, amely két Vektor objektumot tartalmaz: az első a pozíciót, a második a sebességet.
+     * @returns {void}
+     */
     pv_inic(){
         this.svgobject.setAttribute('cx', this.kezdopozicio[0].x);
         this.svgobject.setAttribute('cy', this.kezdopozicio[0].y);
-        this.p = this.kezdopozicio[0].klon();
-        this.v = this.kezdopozicio[1].klon();
+        this.p = this.kezdopozicio[0].masolat();
+        this.v = this.kezdopozicio[1].masolat();
     }
 
+    /**
+     * Mozgatja az égitestet a sebessége alapján. A pozíciót a sebesség vektorával növeli, majd frissíti a rajzot.
+     * @returns {void}
+     */
     mozogj(){
         this.p.hozzaad(this.v);
         this.frissit();
     }
 
+    /**
+     * 
+     * @param {Egitest} egitest 
+     * @returns {boolean}
+     */
     utkozik(egitest){
-        const tavolsagnegyzet = Vektor.kivon(this.p, egitest.p).hossznegyzet();
-        const sugarosszegnegyzet = this.tomeg+egitest.tomeg;
+        const tavolsagnegyzet = Vektor.minus(this.p, egitest.p).hossznegyzet();
+        const sugarosszeg = Math.sqrt(this.tomeg) + Math.sqrt(egitest.tomeg);
+        const sugarosszegnegyzet = sugarosszeg * sugarosszeg;
         return tavolsagnegyzet < sugarosszegnegyzet;
     }
 
@@ -133,7 +166,15 @@ class Egitest{
     
         return hslToHex(blendedHsl);
     }
-    
+
+    /**
+     * Kiszámítja két név "súlyozott átlagát". Akkor használható, ha két égitest összeolvad, és az új égitest neve a két eredeti név súlyozott átlaga lesz. A súlyozás az égitestek tömegén alapul.
+     * @param {string} nev1 
+     * @param {number} suly1 
+     * @param {string} nev2 
+     * @param {number} suly2 
+     * @returns {string}
+     */
     static nevatlag(nev1, suly1, nev2, suly2) {
         const nev1hossz = nev1.length;
         const nev2hossz = nev2.length;
@@ -144,11 +185,16 @@ class Egitest{
         }
         return ujnev;
     }
-    
+
+    /**
+     * Beolvasztja a paraméterként kapott égitestet az aktuális égitestbe. A két égitest összeolvad, és egy új égitest jön létre, amelynek tömege, pozíciója, sebessége és színe a két eredeti égitest súlyozott átlaga lesz. Az új égitestet visszaadja.
+     * @param {Egitest} egitest 
+     * @returns {Egitest}
+     */
     beolvaszt(egitest){
         const uj_tomeg = this.tomeg+egitest.tomeg;
-        const uj_p = Vektor.szamoszt(Vektor.osszead(Vektor.szamszoroz(this.p, this.tomeg), Vektor.szamszoroz(egitest.p, egitest.tomeg)), uj_tomeg);
-        const uj_v = Vektor.szamoszt(Vektor.osszead(Vektor.szamszoroz(this.v, this.tomeg), Vektor.szamszoroz(egitest.v, egitest.tomeg)), uj_tomeg); 
+        const uj_p = Vektor.oszt(Vektor.plus(Vektor.szor(this.p, this.tomeg), Vektor.szor(egitest.p, egitest.tomeg)), uj_tomeg);
+        const uj_v = Vektor.oszt(Vektor.plus(Vektor.szor(this.v, this.tomeg), Vektor.szor(egitest.v, egitest.tomeg)), uj_tomeg); 
         const uj_belszin = Egitest.szinkever(this.belszin, egitest.belszin, egitest.tomeg/uj_tomeg);
         const uj_kulszin = Egitest.szinkever(this.kulszin, egitest.kulszin, egitest.tomeg/uj_tomeg);
         const uj_nev = Egitest.nevatlag(this.nev, this.tomeg, egitest.nev, egitest.tomeg);
@@ -168,8 +214,15 @@ class Egitest{
         egitest.svgobject.remove();
 
         uj_bolygo.svgnyil.classList.toggle('lathatatlan');
+        return uj_bolygo;
     }
 
+
+    /**
+     * Frissíti az égitest pozícióját a DOM-ban a belső pozíció vektor alapján. 
+     * A bolygó és a nyíl pozícióját is frissíti.
+     * @returns {void}
+     */
     frissit(){
         this.svgobject.setAttribute('cx', this.p.x);
         this.svgobject.setAttribute('cy', this.p.y);
@@ -184,18 +237,23 @@ class Egitest{
      * @returns {[Vektor,Vektor]}
      */
     static gravitacios_kolcsonhatas_parra(e, f){
-        const f_bol_e_be_mutato_vektor = Vektor.kivon(e.p,f.p);
+        const f_bol_e_be_mutato_vektor = Vektor.minus(e.p,f.p);
         const rnegyzet = f_bol_e_be_mutato_vektor.hossznegyzet();
         const r = Math.sqrt(rnegyzet);
-        const egysegvektor_f = Vektor.szamoszt(f_bol_e_be_mutato_vektor, r);
+        const egysegvektor_f = Vektor.oszt(f_bol_e_be_mutato_vektor, r);
         const egysegvektor_e = Vektor.ellentett(egysegvektor_f);
         const cucc = Egitest.gamma/rnegyzet;
-        const elmozdulas_e = Vektor.szamszoroz(egysegvektor_e,cucc*f.tomeg);
-        const elmozdulas_f = Vektor.szamszoroz(egysegvektor_f,cucc*e.tomeg);
+        const elmozdulas_e = Vektor.szor(egysegvektor_e,cucc*f.tomeg);
+        const elmozdulas_f = Vektor.szor(egysegvektor_f,cucc*e.tomeg);
         return [elmozdulas_e, elmozdulas_f];
     }
 
 
+    /**
+     * Létrehoz egy SVG kör elemet a bolygó számára a megadott pozícióban.
+     * @param {Vektor} p 
+     * @returns {SVGCircleElement}
+     */
     svg_bolygo_letrehozasa(p){
         let svgo = document.createElementNS("http://www.w3.org/2000/svg", 'circle');
         svgo.setAttribute('r', Math.sqrt(this.tomeg));
@@ -205,6 +263,10 @@ class Egitest{
 
         return svgo;
     }
+    /**
+     * Létrehoz egy SVG nyíl elemet a bolygó sebességének vizualizálására.
+     * @returns {SVGPathElement}
+     */
     svg_nyil_letrehozasa(){
         let svgnyil = document.createElementNS("http://www.w3.org/2000/svg", 'path');
         svgnyil.setAttribute('marker-end', 'url(#head)');
@@ -214,10 +276,12 @@ class Egitest{
         svgnyil.setAttribute('stroke-width', '2');
         return svgnyil;
     }
+
+    /**
+     * Frissíti az égitesthez tartozó SVG nyíl pozícióját a bolygó aktuális pozíciója és sebessége alapján.
+     * @returns {void}
+     */
     svg_nyil_update(){
         this.svgnyil.setAttribute('d', `M${this.p.x},${this.p.y} ${this.p.x+this.v.x*100},${this.p.y+this.v.y*100}`);
     }
-
 }
-
-
